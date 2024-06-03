@@ -1,0 +1,22 @@
+{
+  "name": "g-naira-smart-contract",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@nomicfoundation/hardhat-chai-matchers": "^2.0.6",
+    "@nomicfoundation/hardhat-toolbox": "^5.0.0",
+    "chai": "^4.4.1",
+    "ethers": "^6.11.1",
+    "hardhat": "^2.22.1"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5"
+  }
+}

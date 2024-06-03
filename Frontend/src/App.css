@@ -1,0 +1,77 @@
+body {
+  background-color: #22223b;
+  color: #f2e9e4;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.connect-wallet-btn {
+  border: 2px solid #000;
+}
+
+.connect-wallet-btn, .submit-btn {  
+  cursor: pointer;
+  color: #000;
+  background-color: #4a4e69;
+  border: 2px solid #f2e9e4;
+  border-radius: 5px;
+  font-size: 15px;
+  font-weight: 800;
+  padding: 3px 20px;
+}
+
+textarea {
+  background-color: #9a8c98;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.submit-btn {
+  margin-top: 10px;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.title {
+  font-size: 55px;
+  margin-bottom: 10px;
+}
+
+.welcome {
+  margin-top: 0;
+}
+
+.feed {
+  display: flex;
+  margin: 20px;
+}
+
+.feedback {
+  margin-right: 20px;
+  font-size: 20px;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 40px;
+}
+
+.message {
+  font-size: 30px;
+  margin-bottom: 10px;
+}
+
+.address {
+  font-size: 15px;
+  margin-bottom: 2px;
+}
+
+.time {
+  font-size: 15px;
+}
