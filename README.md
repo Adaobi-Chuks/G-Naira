@@ -1,2 +1,2 @@
 # G-Naira
-## Deployed link: 
+## Deployed link: https://g-naira.vercel.app/
