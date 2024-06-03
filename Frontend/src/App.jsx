@@ -155,6 +155,13 @@ function App() {
             <button type="submit" className="submit-btn">Burn</button>
           </div>
         </form>
+
+        <form onSubmit={handleBlacklist}>
+          <div>
+            <input id='blacklist'></input>
+            <button type="submit" className="submit-btn">Blacklist</button>
+          </div>
+        </form>
       </div>
     </>
   )
