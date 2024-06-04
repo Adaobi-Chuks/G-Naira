@@ -15,8 +15,8 @@ module.exports = {
   solidity: "0.8.19",
   networks: {
     sepolia: {
-      url: `https://eth-sepolia.g.alchemy.com/v2/6vymiRot3yVb5FSi-GQVBKYD3wQmPq5k`,
-      accounts: ["f596baba778cf7dc3d4cfe93155401f35a5fa1d5584ef7606da778fdc3dacf29"]
+      url: `https://eth-sepolia.g.alchemy.com/v2/${process.env.ALCHEMY_KEY}`,
+      accounts: [process.env.KEY]
     }
   }
 };

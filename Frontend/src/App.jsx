@@ -55,7 +55,7 @@ function App() {
 
         window.prompt(`${amount}GNR minted successfully`);
       } else {
-        console.log("Ethereum object doesn't exist!")
+        console.log("Ethereum object doesn't exist!");
       }
     } catch (error) {
       console.error(error);
