@@ -171,16 +171,16 @@ function App() {
 
         <form onSubmit={handleMint}>
           <div>
-            <input className='address' id='mint' placeholder="Enter Address" />
-            <input id='mintAddress' placeholder="Amount" />
+            <input className='address' id='mintAddress' placeholder="Enter Address" />
+            <input id='mint' placeholder="Amount" />
             <button type="submit" className="submit-btn">Mint</button>
           </div>
         </form>
 
         <form onSubmit={handleBurn}>
           <div>
-            <input className='address' id='burn' placeholder="Enter Address" />
-            <input id='burnAddress' placeholder="Amount" />
+            <input className='address' id='burnAddress' placeholder="Enter Address" />
+            <input id='burn' placeholder="Amount" />
             <button type="submit" className="submit-btn">Burn</button>
           </div>
         </form>
