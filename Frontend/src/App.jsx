@@ -156,7 +156,7 @@ function App() {
           </div>
         </form>
 
-        <form onSubmit={}>
+        <form>
           <div>
             <input id='blacklist'></input>
             <button type="submit" className="submit-btn">Blacklist</button>
