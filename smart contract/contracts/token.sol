@@ -12,14 +12,23 @@ contract ERC20Token {
 
     mapping(address account => uint256 amount) balances; // Holds the balances of an account(address) on the contract.
     mapping(address owner => mapping(address spender => uint256 amount)) allowances; // Holds the the `amount` an owner approves a spender on his behalf.
+    mapping(address => bool) private _blacklist;
 
     event Transfer(address from, address to, uint256 amount);
     event Approval(address owner, address spender, uint256 amount);
     event Minted(address to, uint256 amount);
     event Burned(address to, uint256 amount);
+    
+    event Blacklisted(address indexed account);
+    event Whitelisted(address indexed account);
 
     modifier onlyOwner() {
         require(msg.sender == i_owner, "Not Owner");
+        _;
+    }
+
+    modifier notBlacklisted(address account) {
+        require(!_blacklist[account], "Address is blacklisted");
         _;
     }
 
@@ -57,7 +66,7 @@ contract ERC20Token {
     function transfer(
         address to,
         uint256 amount
-    ) public returns (bool success) {
+    ) public notBlacklisted(msg.sender) notBlacklisted(to) returns (bool success) {
         // checks that the reciever's address is not a zero address
         require(to != address(0), "ERC20: transfer to the zero address");
         // checks that the sender (caller of this function) is not a zero address
@@ -81,7 +90,7 @@ contract ERC20Token {
     function approve(
         address spender,
         uint256 amount
-    ) public returns (bool success) {
+    ) public notBlacklisted(msg.sender) notBlacklisted(spender) returns (bool success) {
         // sets the allowances of the `spender` to the `amount` specified by the `owner`(the caller of this function)
         allowances[msg.sender][spender] = amount;
         success = true;
@@ -91,7 +100,7 @@ contract ERC20Token {
     function allowance(
         address owner,
         address spender
-    ) public view returns (uint256) {
+    ) public notBlacklisted(owner) notBlacklisted(spender) view returns (uint256) {
         return allowances[owner][spender];
     }
 
@@ -99,7 +108,7 @@ contract ERC20Token {
         address from,
         address to,
         uint256 amount
-    ) public returns (bool success) {
+    ) public notBlacklisted(from) notBlacklisted(to) returns (bool success) {
         require(to != address(0), "ERC20: transfer to the zero address");
 
         require(from != address(0), "ERC20: transfer from the zero address");
@@ -125,7 +134,7 @@ contract ERC20Token {
 
     // Hint: The mint and burn token function are not part of the core EIP-20 Token Standard
 
-    function mint(address to, uint256 amount) external onlyOwner {
+    function mint(address to, uint256 amount) notBlacklisted(to) external onlyOwner {
         require(
             to != address(0),
             "ERC20: transfer to the zero address not allowed"
@@ -139,7 +148,7 @@ contract ERC20Token {
         emit Minted(to, amount);
     }
 
-    function burn(address to, uint256 amount) external onlyOwner {
+    function burn(address to, uint256 amount) notBlacklisted(to) external onlyOwner {
         require(balanceOf(msg.sender) >= amount, "Insufficient Balance");
 
         // subtract `amount` to the balances of  `to` (the receiver).
@@ -149,6 +158,22 @@ contract ERC20Token {
         tokenTotalSupply -= amount;
 
         emit Burned(to, amount);
+    }
+
+    function blacklistAddress(address account) external onlyOwner {
+        require(account != address(0), "Cannot blacklist the zero address");
+        require(!_blacklist[account], "Address is already blacklisted");
+
+        _blacklist[account] = true;
+        emit Blacklisted(account);
+    }
+
+    function whitelistAddress(address account) external onlyOwner {
+        require(account != address(0), "Cannot whitelist the zero address");
+        require(_blacklist[account], "Address is not blacklisted");
+
+        _blacklist[account] = false;
+        emit Whitelisted(account);
     }
 
 }

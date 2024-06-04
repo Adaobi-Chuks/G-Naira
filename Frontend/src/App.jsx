@@ -1,38 +1,23 @@
 import './App.css'
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { ethers } from "ethers";
 import abi from "./utils/G-Naira.json";
 
 const getEthereumObject = () => window.ethereum;
 
-const findMetaMaskAccount = async () => {
+const extractErrorMessage = (error) => {
   try {
-    const ethereum = getEthereumObject();
-
-    if (!ethereum) {
-      console.error("Make sure you have Metamask!");
-      return null;
-    }
-
-    console.log("We have the Ethereum object", ethereum);
-    const accounts = await ethereum.request({ method: "eth_accounts" });
-
-    if (accounts.length !== 0) {
-      const account = accounts[0];
-      console.log("Found an authorized account:", account);
-      return account;
-    } else {
-      console.error("No authorized account found");
-      return null;
-    }
-  } catch (error) {
-    console.error(error);
-    return null;
+    const errorString = error.toString();
+    const start = errorString.indexOf('execution reverted: "') + 21;
+    const end = errorString.indexOf('"', start);
+    return errorString.slice(start, end);
+  } catch (e) {
+    return error.message;
   }
 };
 
 function App() {
-  const contractAddress = "0x4801C3742A3E5dc32B1E1419fC40ED765d447AFf";
+  const contractAddress = "0x8C455372A2E93a15cc3F1433281E024CF39A31FE";
   const contractABI = abi.abi;
   const [currentAccount, setCurrentAccount] = useState("");
   const [balance, setBalance] = useState(0);
@@ -67,18 +52,24 @@ function App() {
         const mintTxn = await contract.mint(account, amount);
 
         await mintTxn.wait();
+
+        window.prompt(`${amount}GNR minted successfully`);
       } else {
         console.log("Ethereum object doesn't exist!")
       }
     } catch (error) {
       console.error(error);
+      window.prompt(extractErrorMessage(error.message));
     }
   };
 
   const handleMint = async (event) => {
     event.preventDefault();
     const mintAmount = document.getElementById('mint').value;
-    await mint(currentAccount, mintAmount);
+    const mintAddress = document.getElementById('mintAddress').value;
+    await mint(mintAddress, mintAmount);
+    document.getElementById('mint').value = "";
+    document.getElementById('mintAddress').value = "";
     await getBalance(currentAccount);
   };
 
@@ -94,19 +85,55 @@ function App() {
 
         await burnTxn.wait();
 
+        window.prompt(`${amount}GNR burned successfully`);
       } else {
         console.log("Ethereum object doesn't exist!")
       }
     } catch (error) {
       console.error(error);
-      window.prompt("NOT GOVERNOR")
+      window.prompt(extractErrorMessage(error.message));
+    }
+  };
+
+  const blacklist = async (account) => {
+    try {
+      const { ethereum } = window;
+      if (ethereum) {
+        const provider = new ethers.BrowserProvider(ethereum);
+        const signer = await provider.getSigner();
+        const contract = new ethers.Contract(contractAddress, contractABI, signer);
+
+        console.log(contract)
+        const blacklistTxn = await contract.blacklistAddress(account);
+        console.log(1)
+
+        await blacklistTxn.wait();
+
+        window.prompt(`${account} blacklisted successfully`);
+      } else {
+        console.log("Ethereum object doesn't exist!")
+      }
+    } catch (error) {
+      console.error(error);
+      window.prompt(extractErrorMessage(error.message));
     }
   };
 
   const handleBurn = async (event) => {
     event.preventDefault();
     const burnAmount = document.getElementById('burn').value;
-    await burn(currentAccount, burnAmount);
+    const burnAddress = document.getElementById('burnAddress').value;
+    await burn(burnAddress, burnAmount);
+    document.getElementById('burn').value = "";
+    document.getElementById('burnAddress').value = "";
+    await getBalance(currentAccount);
+  };
+
+  const handleBlacklist = async (event) => {
+    event.preventDefault();
+    const account = document.getElementById('blacklist').value;
+    await blacklist(account);
+    document.getElementById('blacklist').value = "";
     await getBalance(currentAccount);
   };
 
@@ -140,19 +167,28 @@ function App() {
             :
             (<button className='connect-wallet-btn' onClick={connectWallet} >Connect Wallet</button>)
         }
-        <div className='feedback'>Balance: {balance.toString()}</div>
+        <div className='balance'>Balance: {balance.toString()}</div>
 
         <form onSubmit={handleMint}>
           <div>
-            <input id='mint'></input>
+            <input className='address' id='mint' placeholder="Enter Address" />
+            <input id='mintAddress' placeholder="Amount" />
             <button type="submit" className="submit-btn">Mint</button>
           </div>
         </form>
 
         <form onSubmit={handleBurn}>
           <div>
-            <input id='burn'></input>
+            <input className='address' id='burn' placeholder="Enter Address" />
+            <input id='burnAddress' placeholder="Amount" />
             <button type="submit" className="submit-btn">Burn</button>
+          </div>
+        </form>
+
+        <form onSubmit={handleBlacklist}>
+          <div>
+            <input className='address' id='blacklist' placeholder="Enter Address" />
+            <button type="submit" className="submit-btn">Blacklist</button>
           </div>
         </form>
       </div>

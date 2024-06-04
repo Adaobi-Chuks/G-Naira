@@ -12,7 +12,7 @@ task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
 });
 
 module.exports = {
-  solidity: "0.8.24",
+  solidity: "0.8.19",
   networks: {
     sepolia: {
       url: `https://eth-sepolia.g.alchemy.com/v2/6vymiRot3yVb5FSi-GQVBKYD3wQmPq5k`,
